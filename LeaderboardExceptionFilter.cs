@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 
-namespace CustomerDemo
+namespace LeaderboardDemo
 {
     /// <summary>
     /// 异常过滤器，统一捕获Controller中的异常

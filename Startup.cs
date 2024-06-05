@@ -4,14 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Collections;
 
-namespace CustomerDemo
+namespace LeaderboardDemo
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;            
         }
 
         public IConfiguration Configuration { get; }
@@ -22,7 +23,7 @@ namespace CustomerDemo
             services.AddControllers(opt=> { opt.Filters.Add<LeaderboardExceptionFilter>(); });   
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerDemo", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeaderboardDemo", Version = "v1" });
             });
 
         }

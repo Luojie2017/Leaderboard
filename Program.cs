@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 
-namespace CustomerDemo
+namespace LeaderboardDemo
 {
     public class Program
     {

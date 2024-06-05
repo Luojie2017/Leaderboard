@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace CustomerDemo.Controllers
+namespace LeaderboardDemo.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -23,19 +24,19 @@ namespace CustomerDemo.Controllers
             return await Task.Run(() => {
                 try
                 {
-                    var customer = Customer.Leaderboard.FirstOrDefault(c => c.CustomerID.Equals(customerid));
-                    if (customer == null)
+                    var cus = CustomerLeaderboard.Leaderboard.Where(c => c.CustomerID == customerid).FirstOrDefault();
+                    if (cus == null)
                     {
                         var newCustomer = new Customer() { CustomerID = customerid, Score = score };
-                        Customer.Leaderboard.Add(newCustomer);
-                        customer = newCustomer;
+                        CustomerLeaderboard.Leaderboard.Add(newCustomer);
+                        cus = newCustomer;
                     }
                     else
                     {
-                        customer.Score += score;
+                        cus.Score += score;
                     }
-                    Customer.Reorder();
-                    return Ok(customer) as ActionResult;
+                    CustomerLeaderboard.Reorder();
+                    return Ok(cus) as ActionResult;
                 }
                 catch (Exception ex)
                 {
@@ -58,8 +59,8 @@ namespace CustomerDemo.Controllers
                 try
                 {
                     if (start > end) throw new ArgumentException("参数错误，start参数值必须小于end参数值。");
-                    var customers = Customer.Leaderboard.Where(c => c.Rank >= start && c.Rank <= end).ToList();
-                    return Ok(customers) as ActionResult;
+                    var customers =CustomerLeaderboard.Leaderboard.Where(c => c.Rank >= start && c.Rank <= end);
+                    return Ok(customers.OrderBy(o=>o.Rank)) as ActionResult;
                 }
                 catch (Exception ex)
                 {
@@ -82,12 +83,12 @@ namespace CustomerDemo.Controllers
             {
                 try
                 {
-                    var customer = Customer.Leaderboard.FirstOrDefault(c => c.CustomerID.Equals(customerid));
-                    if (customer == null) throw new ArgumentException(string.Format("客户ID【{0}】错误，没有找到该客户。",customerid));
+                    var customer = CustomerLeaderboard.Leaderboard.Where(c => c.CustomerID == customerid).FirstOrDefault();
+                    if (customer==null) throw new ArgumentException(string.Format("客户ID【{0}】错误，没有找到该客户。", customerid));                                      
                     var highRank = (int)customer.Rank - (int)high;
                     var lowRank = (int)customer.Rank + (int)low;
-                    var customers = Customer.Leaderboard.Where(c => c.Rank >= highRank && c.Rank <= lowRank);
-                    return Ok(customers) as ActionResult;
+                    var customers = CustomerLeaderboard.Leaderboard.Where(c => c.Rank >= highRank && c.Rank <= lowRank);
+                    return Ok(customers.OrderBy(o=>o.Rank)) as ActionResult;
                 }
                 catch (Exception ex)
                 {
@@ -109,7 +110,7 @@ namespace CustomerDemo.Controllers
             {
                 try
                 {
-                    return Ok(Customer.Leaderboard) as ActionResult;
+                    return Ok(CustomerLeaderboard.Leaderboard.OrderByDescending(o=>o.Score).ThenBy(o=>o.CustomerID)) as ActionResult;                    
                 }
                 catch (Exception ex)
                 {
